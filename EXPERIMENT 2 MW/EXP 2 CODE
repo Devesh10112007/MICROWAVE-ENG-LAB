@@ -1,0 +1,13 @@
+clc; clear; close all;
+f=linspace(8e9,12e9,401); Z0=50; L=50e-3; f0=10e9;
+S11=0.05+0.02i*zeros(size(f)); S21=0.9*exp(-1i*2*pi*f*L/2e8);
+S12=S21; S22=S11;
+S11db=20*log10(abs(S11)); S21db=20*log10(abs(S21));
+RL=-S11db; IL=-S21db; eta=abs(S21).^2*100;
+[~,i0]=min(abs(f-f0)); [~,ibest]=min(abs(S11)); [~,imax]=max(abs(S21));
+fprintf('At 10 GHz: S11=%.2f dB, S21=%.2f dB\n',S11db(i0),S21db(i0));
+fprintf('Return Loss=%.2f dB, Insertion Loss=%.2f dB, Efficiency=%.2f%%\n',RL(i0),IL(i0),eta(i0));
+fprintf('Best S11 frequency=%.2f GHz; best S21 frequency=%.2f GHz\n',f(ibest)/1e9,f(imax)/1e9);
+figure; subplot(2,1,1); plot(f/1e9,S11db,f/1e9,S21db); grid on; xlabel('Frequency (GHz)'); ylabel('Magnitude (dB)'); legend('S11','S21');
+subplot(2,1,2); plot(f/1e9,RL,f/1e9,IL); grid on; xlabel('Frequency (GHz)'); ylabel('Loss (dB)'); legend('Return Loss','Insertion Loss');
+figure; plot(f/1e9,eta); grid on; xlabel('Frequency (GHz)'); ylabel('Efficiency (%)'); title('Transmission Efficiency');
